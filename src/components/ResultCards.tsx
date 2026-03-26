@@ -21,11 +21,23 @@ function MetricCard({ label, value, subtitle, color = 'neutral', large = false }
     neutral: 'bg-gray-800/50 border-gray-700 text-gray-300',
   };
 
+  // Auto-size: longer values get smaller font to prevent overflow
+  const getValueSize = () => {
+    const len = value.length;
+    if (!large) {
+      return len > 10 ? 'text-sm' : len > 7 ? 'text-base' : 'text-lg';
+    }
+    // Large cards: scale down for longer values
+    if (len > 10) return 'text-base md:text-lg';
+    if (len > 7) return 'text-lg md:text-xl';
+    return 'text-xl md:text-2xl';
+  };
+
   return (
-    <div className={`rounded-xl border p-4 ${colors[color]}`}>
-      <p className="text-xs font-medium uppercase tracking-wide opacity-70 mb-1">{label}</p>
-      <p className={`font-bold ${large ? 'text-2xl' : 'text-lg'}`}>{value}</p>
-      {subtitle && <p className="text-xs opacity-60 mt-1">{subtitle}</p>}
+    <div className={`rounded-xl border p-3 sm:p-4 flex flex-col min-w-0 overflow-hidden ${colors[color]}`}>
+      <p className="text-[10px] sm:text-xs font-medium uppercase tracking-wide opacity-70 mb-1 truncate">{label}</p>
+      <p className={`font-bold leading-tight truncate ${getValueSize()}`}>{value}</p>
+      {subtitle && <p className="text-[10px] sm:text-xs opacity-60 mt-1 truncate">{subtitle}</p>}
     </div>
   );
 }
